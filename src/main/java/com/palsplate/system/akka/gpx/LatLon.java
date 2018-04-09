@@ -1,36 +1,30 @@
 package com.palsplate.system.akka.gpx;
 
-public class LatLon{
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 
-    double lat;
-    double lon;
+@AllArgsConstructor
+public class LatLon {
 
-    public LatLon(double lat, double lon) {
+    public LatLon(Double lat, Double lon) {
         this.lat = lat;
         this.lon = lon;
     }
 
-    public double getLat() {
-        return lat;
-    }
+    @Getter
+    @Setter
+    private Double lat, lon;
 
-    public void setLat(double lat) {
-        this.lat = lat;
-    }
-
-    public double getLon() {
-        return lon;
-    }
-
-    public void setLon(double lon) {
-        this.lon = lon;
-    }
+    @Getter
+    String name;
 
     @Override
     public String toString() {
         return "LatLon{" +
                 "lat=" + lat +
                 ", lon=" + lon +
+                ", name='" + name + '\'' +
                 '}';
     }
 }
