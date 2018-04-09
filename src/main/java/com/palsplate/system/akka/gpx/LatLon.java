@@ -21,10 +21,9 @@ public class LatLon {
 
     @Override
     public String toString() {
-        return "LatLon{" +
+        return "[[[" +
                 "lat=" + lat +
                 ", lon=" + lon +
-                ", name='" + name + '\'' +
-                '}';
+                ", name='" + name + '\'' + "]]]";
     }
 }

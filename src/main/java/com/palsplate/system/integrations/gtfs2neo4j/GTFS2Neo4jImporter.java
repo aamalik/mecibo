@@ -2,6 +2,7 @@ package com.palsplate.system.integrations.gtfs2neo4j;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -68,7 +69,7 @@ public class GTFS2Neo4jImporter {
                         n.setProperty("locationTpe", s.getLocationType());
 
 					}
-					log.info("Imported {}", s.getName());
+//					log.info("Imported {}", s.getName());
 					store.getStopTimesForStop(s).forEach((st) -> {
 //						log.info("Found for this {}", st.getRouteShortName());
 					});
@@ -78,37 +79,27 @@ public class GTFS2Neo4jImporter {
 				tx.success();
                 log.info("Stored {} datasets to layer ", store.getAllStops().size(), LAYER_NAME);
 			}
-//            findCloseToStation();
 
 		} catch (Exception e){
 		    log.error(e.getMessage());
 		}
 	}
 
-//	public void findCloseToStation(){
-//
-//        LatLon latlon = new LatLon(54.310567000000, 10.098604000000);
-//
-//        log.info("Closest Stations Sizes: " + findCloseTo(latlon,1));
-//
-//    }
-
-
-    public Set<LatLon> findCloseTo(LatLon latlon, float distanceInKm) {
+    public ArrayList<LatLon> findCloseTo(LatLon latlon, double distanceInKm) {
 
         List<SpatialDatabaseRecord> results = null;
-        Set<LatLon> resultSet = null;
+        ArrayList<LatLon> resultSet = null;
+
 
         try (Transaction tx = db.beginTx()) {
 
             results = GeoPipeline.startNearestNeighborLatLonSearch(layer, latLon2Coordinate(latlon), distanceInKm)
                     .toSpatialDatabaseRecordList();
 
-            log.debug("results: " + results);
-            log.info("List Size: " + results.size());
+            resultSet = new ArrayList<>(toLatLonList(results));
+//            log.debug("resultSetSize: " + resultSet.size());
 
-            resultSet = new HashSet<LatLon>(toLatLonList(results));
-            log.info("Set Size: " + resultSet.size());
+            tx.success();
 
             return resultSet;
         }
