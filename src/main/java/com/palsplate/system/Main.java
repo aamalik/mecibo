@@ -1,4 +1,4 @@
-package com.palsplate.system.lecibo.api;
+package com.palsplate.system;
 
 import com.palsplate.system.akka.gpx.AkkaGpxTest;
 import com.palsplate.system.akka.gpx.LatLon;
