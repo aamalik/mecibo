@@ -17,10 +17,10 @@ public class AkkaGpxTest {
     public ArrayList<LatLon> extractLatLonFromFile() throws XMLStreamException, IOException {
 
         final AsyncXMLInputFactory f = new InputFactoryImpl();
-        AsyncXMLStreamReader<AsyncByteArrayFeeder> sr = null;
+        AsyncXMLStreamReader<AsyncByteArrayFeeder> sc = null;
 
         ClassLoader classLoader = getClass().getClassLoader();
-        File file = new File(classLoader.getResource("customHamburg.gpx").getFile());
+        File file = new File(classLoader.getResource("abfahrtCar.gpx").getFile());
 
         //init array with file length
         byte[] xmlBytes = new byte[(int) file.length()];
@@ -29,22 +29,21 @@ public class AkkaGpxTest {
         fis.read(xmlBytes); //read file into bytes[]
         fis.close();
 
-        sr = f.createAsyncFor(xmlBytes);
+        sc = f.createAsyncForByteArray();
+
         ArrayList<LatLon> latlonList = new ArrayList<LatLon>();
 
         int bufferFeedLength = 1 ;
         int currentByteOffset = 0 ;
         int type ;
         do{
-            while( (type = sr.next() ) == AsyncXMLStreamReader.EVENT_INCOMPLETE ) {
-                break;
-//                byte[] buffer = new byte[]{ xmlBytes[ currentByteOffset ] } ;
-//                currentByteOffset ++ ;
-//                System.out.println("buffer: " + buffer);
-//                sr.getInputFeeder().feedInput( buffer, 0, bufferFeedLength ) ;
-//                if( currentByteOffset >= xmlBytes.length ) {
-//                    sr.getInputFeeder().endOfInput() ;
-//                }
+            while( (type = sc.next()) == AsyncXMLStreamReader.EVENT_INCOMPLETE ) {
+                byte[] buffer = new byte[]{ xmlBytes[ currentByteOffset ] } ;
+                currentByteOffset ++ ;
+                sc.getInputFeeder().feedInput( buffer, 0, bufferFeedLength ) ;
+                if( currentByteOffset >= xmlBytes.length ) {
+                    sc.getInputFeeder().endOfInput() ;
+                }
             }
             switch( type ) {
 
@@ -53,23 +52,23 @@ public class AkkaGpxTest {
                     break ;
 
                 case XMLEvent.START_ELEMENT :
-//                    System.out.println( "start element: " + sr.getName());
+//                    System.out.println( "start element: " + sc.getName());
 
-                    if(sr.getName().toString().contains("trkpt")){
+                    if(sc.getName().toString().contains("trkpt")){
 
-                        latlonList.add(new LatLon(Double.parseDouble(sr.getAttributeValue(0)),
-                                Double.parseDouble(sr.getAttributeValue(1))));
-//                        System.out.println(sr.getAttributeName(0) + " " + sr.getAttributeValue(0));
-//                        System.out.println(sr.getAttributeName(1) + " " + sr.getAttributeValue(1));
+                        latlonList.add(new LatLon(Double.parseDouble(sc.getAttributeValue(0)),
+                                Double.parseDouble(sc.getAttributeValue(1))));
+//                        System.out.println(sc.getAttributeName(0) + " " + sc.getAttributeValue(0));
+//                        System.out.println(sc.getAttributeName(1) + " " + sc.getAttributeValue(1));
                     }
                     break ;
 
                 case XMLEvent.CHARACTERS :
-//                    System.out.println( "characters: " + sr.getText()) ;
+//                    System.out.println( "characters: " + sc.getText()) ;
                     break ;
 
                 case XMLEvent.END_ELEMENT :
-//                    System.out.println( "end element: " + sr.getName()) ;
+//                    System.out.println( "end element: " + sc.getName()) ;
                     break ;
 
                 case XMLEvent.END_DOCUMENT :
@@ -79,20 +78,20 @@ public class AkkaGpxTest {
                 default :
                     break ;
             }
-            sr.getInputFeeder().endOfInput() ;
         } while( type != XMLEvent.END_DOCUMENT ) ;
-        sr.close();
+        sc.close();
 
         return latlonList;
 
     }
 
-//    public static void main(String[] args) throws IOException, XMLStreamException {
-//
-//        AkkaGpxTest jt = new AkkaGpxTest();
-//        ArrayList<LatLon> output = jt.extractLatLonFromFile();
-//
-//        System.out.println("output: " + output.size());
-//
-//    }
+    public static void main(String[] args) throws IOException, XMLStreamException {
+
+        AkkaGpxTest jt = new AkkaGpxTest();
+        ArrayList<LatLon> output = jt.extractLatLonFromFile();
+
+        System.out.println("output: " + output.toString());
+        System.out.println("output size: " + output.size());
+
+    }
 }
