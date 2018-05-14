@@ -1,3 +1,4 @@
+src/logback.xml
 .idea/
 *.iml
 .idea/*

@@ -1,17 +1,8 @@
-package com.palsplate.system.integrations.gtfs2neo4j;
+package com.mecibo.system.integrations.gtfs2neo4j;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import com.palsplate.system.akka.gpx.LatLon;
-import io.micrometer.core.instrument.search.Search;
+import com.mecibo.system.akka.gpx.LatLon;
+import com.vividsolutions.jts.geom.Coordinate;
 import org.neo4j.gis.spatial.*;
-import org.neo4j.gis.spatial.filter.SearchIntersectWindow;
-import org.neo4j.gis.spatial.index.SpatialIndexReader;
 import org.neo4j.gis.spatial.pipes.GeoPipeline;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
@@ -20,15 +11,14 @@ import org.neo4j.graphdb.factory.GraphDatabaseFactory;
 import org.onebusaway.gtfs.impl.GtfsRelationalDaoImpl;
 import org.onebusaway.gtfs.serialization.GtfsReader;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
-import com.vividsolutions.jts.geom.Coordinate;
-
-import lombok.extern.slf4j.Slf4j;
-
-@Slf4j
 public class GTFS2Neo4jImporter {
 
-	final static String LAYER_NAME = "finalHamburgLayer";
+    final static String LAYER_NAME = "finalHamburgLayer";
 
     GraphDatabaseService db = new GraphDatabaseFactory().newEmbeddedDatabaseBuilder(new File("./tmp/neotest")).newGraphDatabase();
     SpatialDatabaseService spatialService = new SpatialDatabaseService(db);
@@ -44,8 +34,8 @@ public class GTFS2Neo4jImporter {
 		reader.setEntityStore(store);
 		reader.run();
 
-        log.info("Agencies: " + store.getAllAgencies().toString());
-        log.info("Stop  Sizes: " +  store.getAllStops().size());
+        System.out.println("Agencies: " + store.getAllAgencies().toString());
+        System.out.println("Stop  Sizes: " +  store.getAllStops().size());
 
 		try{
             // get or create a layer for station
@@ -54,7 +44,7 @@ public class GTFS2Neo4jImporter {
                     : (EditableLayer) spatialService.createSimplePointLayer(LAYER_NAME, "Longitude", "Latitude"));
 
             try (Transaction tx = spatialService.getDatabase().beginTx()) {
-                log.info("All stops" + store.getAllStops());
+                System.out.println("All stops" + store.getAllStops());
 
                 store.getAllStops().forEach((s) -> {
 
@@ -77,11 +67,11 @@ public class GTFS2Neo4jImporter {
 				});
 
 				tx.success();
-                log.info("Stored {} datasets to layer ", store.getAllStops().size(), LAYER_NAME);
+                System.out.println("Stored {} datasets to layer " + store.getAllStops().size() + LAYER_NAME);
 			}
 
 		} catch (Exception e){
-		    log.error(e.getMessage());
+            System.out.println(e.getMessage());
 		}
 	}
 

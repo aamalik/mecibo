@@ -1,4 +1,4 @@
-package com.palsplate.system.akka.gpx;
+package com.mecibo.system.akka.gpx;
 
 import com.fasterxml.aalto.AsyncByteArrayFeeder;
 import com.fasterxml.aalto.AsyncXMLInputFactory;
@@ -20,7 +20,7 @@ public class AkkaGpxTest {
         AsyncXMLStreamReader<AsyncByteArrayFeeder> sc = null;
 
         ClassLoader classLoader = getClass().getClassLoader();
-        File file = new File(classLoader.getResource("abfahrtCar.gpx").getFile());
+        File file = new File(classLoader.getResource("customHamburg.gpx").getFile());
 
         //init array with file length
         byte[] xmlBytes = new byte[(int) file.length()];
@@ -31,7 +31,7 @@ public class AkkaGpxTest {
 
         sc = f.createAsyncForByteArray();
 
-        ArrayList<LatLon> latlonList = new ArrayList<LatLon>();
+        ArrayList<LatLon> latlonList = new ArrayList<>();
 
         int bufferFeedLength = 1 ;
         int currentByteOffset = 0 ;
@@ -85,13 +85,14 @@ public class AkkaGpxTest {
 
     }
 
-    public static void main(String[] args) throws IOException, XMLStreamException {
+//    public static void main(String[] args) throws IOException, XMLStreamException {
+//
+//        AkkaGpxTest jt = new AkkaGpxTest();
+//        ArrayList<LatLon> output = jt.extractLatLonFromFile();
+//
+//        System.out.println("output: " + output.toString());
+//        System.out.println("output size: " + output.size());
+//
+//    }
 
-        AkkaGpxTest jt = new AkkaGpxTest();
-        ArrayList<LatLon> output = jt.extractLatLonFromFile();
-
-        System.out.println("output: " + output.toString());
-        System.out.println("output size: " + output.size());
-
-    }
 }

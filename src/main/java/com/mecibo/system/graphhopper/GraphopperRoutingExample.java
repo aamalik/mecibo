@@ -1,4 +1,4 @@
-package com.palsplate.system.graphhopper;
+package com.mecibo.system.graphhopper;
 
 import com.graphhopper.directions.api.client.ApiException;
 import com.graphhopper.directions.api.client.api.RoutingApi;
@@ -11,7 +11,7 @@ import java.util.Arrays;
 /**
  * A simple example for querying the Routing API.
  */
-public class RoutingExample {
+public class GraphopperRoutingExample {
 
     private void start() {
         RoutingApi routing = new RoutingApi();
@@ -52,6 +52,6 @@ public class RoutingExample {
     }
 
     public static void main(String[] args) {
-        new RoutingExample().start();
+        new GraphopperRoutingExample().start();
     }
 }

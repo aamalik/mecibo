@@ -1,4 +1,4 @@
-package com.palsplate.system.akka.gpx;
+package com.mecibo.system.akka.gpx;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
